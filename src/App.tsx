@@ -61,7 +61,7 @@ const CurrencyConverter: React.FC = () => {
   const [isCurrenciesLoading, setIsCurrenciesLoading] = useState<boolean>(true);
   const [swapAnimation, setSwapAnimation] = useState<boolean>(false);
 
-  const API_KEY = import.meta.env.CURRENCY_API_KEY;
+  const API_KEY = import.meta.env.VITE_CURRENCY_API_KEY;
 
   // Get cached data utilities
   const getCachedCurrencies = (): CurrenciesCache | null => {
