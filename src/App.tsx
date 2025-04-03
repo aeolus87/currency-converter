@@ -61,7 +61,7 @@ const CurrencyConverter: React.FC = () => {
   const [isCurrenciesLoading, setIsCurrenciesLoading] = useState<boolean>(true);
   const [swapAnimation, setSwapAnimation] = useState<boolean>(false);
 
-  const API_KEY = import.meta.env.VITE_CURRENCY_API_KEY;
+  const API_KEY = import.meta.env.CURRENCY_API_KEY;
 
   // Get cached data utilities
   const getCachedCurrencies = (): CurrenciesCache | null => {
@@ -190,14 +190,11 @@ const CurrencyConverter: React.FC = () => {
     }
   };
 
-  // Load exchange rates with improved caching strategy
   const loadExchangeRates = async (base: string, forceReload = false) => {
-    // Check if we already have these rates in memory
     if (!forceReload && exchangeRates[base]) {
-      return; // Use rates we already have
+      return;
     }
 
-    // Check cache if not forcing reload
     if (!forceReload) {
       const cachedData = getCachedRates();
       if (
@@ -219,17 +216,14 @@ const CurrencyConverter: React.FC = () => {
       }
     }
 
-    // If we reach here, we need to fetch fresh data
     await fetchExchangeRates(base);
   };
 
-  // Initial loads
   useEffect(() => {
     fetchCurrencies();
-    loadExchangeRates("USD", false); // Load USD rates by default
+    loadExchangeRates("USD", false);
   }, []);
 
-  // Calculate converted amount when values change
   useEffect(() => {
     if (
       amount !== "" &&
@@ -258,7 +252,6 @@ const CurrencyConverter: React.FC = () => {
     }
   }, [amount, exchangeRates, fromCurrency, toCurrency]);
 
-  // Input validation for amount
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value === "") {
@@ -272,27 +265,23 @@ const CurrencyConverter: React.FC = () => {
     }
   };
 
-  // Handle from currency change
   const handleFromCurrencyChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const newCurrency = e.target.value;
     setFromCurrency(newCurrency);
 
-    // Load rates if we don't have them
     if (!exchangeRates[newCurrency]) {
       loadExchangeRates(newCurrency, false);
     }
   };
 
-  // Refresh rates for current currency
   const handleRefreshRates = () => {
     if (fromCurrency) {
       loadExchangeRates(fromCurrency, true);
     }
   };
 
-  // Swap currencies
   const handleSwapCurrencies = () => {
     setSwapAnimation(true);
     setTimeout(() => {
@@ -300,7 +289,6 @@ const CurrencyConverter: React.FC = () => {
       setFromCurrency(toCurrency);
       setToCurrency(temp);
 
-      // Load rates if needed
       if (!exchangeRates[toCurrency]) {
         loadExchangeRates(toCurrency, false);
       }
@@ -308,7 +296,6 @@ const CurrencyConverter: React.FC = () => {
     }, 300);
   };
 
-  // Check if using cached data
   const isUsingCachedData = () => {
     const cachedData = getCachedRates();
     return (
@@ -318,7 +305,6 @@ const CurrencyConverter: React.FC = () => {
     );
   };
 
-  // Get exchange rate between current currencies
   const getExchangeRate = () => {
     if (fromCurrency === toCurrency) {
       return 1;
